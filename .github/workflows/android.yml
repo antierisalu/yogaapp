@@ -2,10 +2,8 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     tags: [ 'v*' ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -29,7 +27,8 @@ jobs:
           name: app-debug.apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-  upload:
+
+  release:
     runs-on: ubuntu-latest
     needs: build
 
@@ -40,12 +39,20 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-debug.apk
-          path: app/build/outputs/apk/debug/
-
-      - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          files: app/build/outputs/apk/debug/app-debug.apk
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app-debug.apk
+          asset_name: yoga-v${{ github.run_number }}.apk
+          asset_content_type: application/vnd.android.package-archive
