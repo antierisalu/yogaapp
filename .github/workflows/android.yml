@@ -32,10 +32,12 @@ jobs:
         with:
           name: app-debug.apk
           path: .
+      - name: rename APK
+        run: mv app-debug.apk ywa-daily-${{ github.ref_name }}.apk
       - name: Create Release and Upload APK
         uses: softprops/action-gh-release@v2
         with:
-          files: app-debug.apk
+          files: ywa-daily-${{ github.ref_name }}.apk
           name: ywa-daily-${{ github.ref_name }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
