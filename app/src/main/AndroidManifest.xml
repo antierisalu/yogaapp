@@ -22,7 +22,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Daily Yoga"
-        android:banner="@drawable/bannerwobg"
+        android:banner="@drawable/ywalogoblack"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <meta-data
             android:name="com.liskovsoft.videomanager.API_VERSION"
