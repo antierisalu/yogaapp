@@ -27,3 +27,24 @@ jobs:
         with:
           name: app-debug.apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
